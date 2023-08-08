@@ -72,7 +72,7 @@ resize(struct vector* vec, int new_cap)
  * veclen *
  **********/
 
-void
+int
 veclen(struct vector* vec)
 {
     return vec->len;

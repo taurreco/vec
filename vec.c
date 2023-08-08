@@ -4,8 +4,6 @@
 #include <assert.h>
 #include <string.h>
 
-#define GROWTH_FACTOR 2
-
 /*********************************************************************
  *                                                                   *
  *                    constructor / destructor                       *
@@ -108,7 +106,7 @@ void
 vecpush(struct vector* vec, void* src)
 {
     if (vec->len == vec->cap) {
-        resize(vec, vec->cap * GROWTH_FACTOR);    
+        resize(vec, vec->cap * 2);    
     }
 
     vec->len++;
@@ -129,7 +127,7 @@ vecadd(struct vector* vec, void* src, int idx)
     char* start;
     
     if (vec->len == vec->cap) {
-        resize(vec, vec->cap * GROWTH_FACTOR);
+        resize(vec, vec->cap * 2);
     }
 
     bytes = (vec->len - idx) * vec->stride;

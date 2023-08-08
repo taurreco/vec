@@ -14,24 +14,26 @@ struct vector {
 
 /* construction / destruction */
 
-struct vector* mkvec(int len, int stride);
+struct vector* mkvec(int cap, int stride);
 void delvec(struct vector* vec);
 
 /* insertion */
 
-void vecset(struct vector* vec, void* src, int i);
+void vecset(struct vector* vec, void* src, int idx);
 void vecpush(struct vector* vec, void* src);
-void vecadd(struct vector* vec, void* src, int i);
+void vecadd(struct vector* vec, void* src, int idx);
 
 /* deletion */
 
 void vecpop(struct vector* vec, void* dst);
-void vecdel(struct vector* vec, int i);
+void vecdel(struct vector* vec, int idx, void* dst);
 
 /* retrieval */
 
-void vecget(struct vector* vec, int i, void* dst);
-void vectop(struct vector* vec, void* dst);
-void vecback(struct vector* vec, void* dst);
+void vecget(struct vector* vec, int idx, void* dst);
+
+/* utility */
+
+int veclen(struct vector* vec);
 
 #endif    /* VEC_H */

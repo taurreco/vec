@@ -1,6 +1,10 @@
 #include "vec.h"
+
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
+
+#define GROWTH_FACTOR 2
 
 /*********************************************************************
  *                                                                   *
@@ -13,17 +17,17 @@
  *********/
 
 struct vector*
-mkvec(int len, int stride)
+mkvec(int cap, int stride)
 {
     struct vector* vec;
     char* data;
     
     vec = malloc(sizeof(struct vector));
-    data = malloc(len * stride);
+    data = malloc(cap * stride);
 
     vec->data = data;
-    vec->cap = len;
-    vec->len = len;
+    vec->cap = cap;
+    vec->len = 0;
     vec->stride = stride;
 }
 
@@ -44,28 +48,54 @@ delvec(struct vector* vec)
  *                                                                   *
  *********************************************************************/
 
+/**********
+ * resize *
+ **********/
+
+/* changes size of vector */
+
+void
+resize(struct vector* vec, int new_cap)
+{
+    char* new_data;
+    char* tmp;
+
+    new_data = malloc(new_cap * vec->stride);
+    tmp = vec->data;
+    
+    memcpy(new_data, vec->data, vec->len * vec->stride);
+    vec->data = new_data;
+    vec->cap = new_cap;
+    
+    free(tmp);
+}
+
+/**********
+ * veclen *
+ **********/
+
+void
+veclen(struct vector* vec)
+{
+    return vec->len;
+}
+
 /*********************************************************************
  *                                                                   *
  *                            insertion                              *
  *                                                                   *
  *********************************************************************/
 
-/***********
- * vecpush *
- ***********/
+/**********
+ * vecset *
+ **********/
 
-/* pushes item to the back of the vector */
+/* updates existing item */
 
 void
-vecset(struct vector* vec, void* src, int i)
+vecset(struct vector* vec, void* src, int idx)
 {
-    assert(vec);
-    assert(src);
-    assert(vec->cap > vec->len);
-    assert(vec->len);
-    assert(vec->len > i);
-
-    memcpy(vec->data + i * vec->stride, src, vec->stride);
+    memcpy(vec->data + idx * vec->stride, src, vec->stride);
 }
 
 /***********
@@ -75,15 +105,106 @@ vecset(struct vector* vec, void* src, int i)
 /* pushes item to the back of the vector */
 
 void
-vecpush(struct vector* vec, void* src);
+vecpush(struct vector* vec, void* src)
 {
-    assert(vec);
-    assert(src);
-    assert(vec->cap >= vec->len);
-    
-    if (vec->cap == vec->len) {
-    
+    if (vec->len == vec->cap) {
+        resize(vec, vec->cap * GROWTH_FACTOR);    
     }
+
+    vec->len++;
 
     vecset(vec, src, vec->len - 1);
 }
+
+/**********
+ * vecadd *
+ **********/
+
+/* inserts an item at an index */
+
+void
+vecadd(struct vector* vec, void* src, int idx)
+{
+    int bytes;
+    char* start;
+    
+    if (vec->len == vec->cap) {
+        resize(vec, vec->cap * GROWTH_FACTOR);
+    }
+
+    bytes = (vec->len - idx) * vec->stride;
+    start = vec->data + idx * vec->stride;
+
+    memmove(start + vec->stride, start, bytes);
+    vecset(vec, src, idx);
+    
+    vec->len++;
+}
+
+/*********************************************************************
+ *                                                                   *
+ *                             deletion                              *
+ *                                                                   *
+ *********************************************************************/
+
+/**********
+ * vecpop *
+ **********/
+
+/* removes the last item in the vector, copies it to dst */
+
+void
+vecpop(struct vector* vec, void* dst)
+{
+    if (vec->len < 3 * vec->cap / 4) {
+        resize(vec, 3 * vec->cap / 4);
+    }
+    
+    vec->len--;
+
+    memcpy(dst, vec->data + idx * vec->stride, vec->stride);
+}
+
+/**********
+ * vecdel *
+ **********/
+
+/* deletes an item at an index */
+
+void
+vecdel(struct vector* vec, int idx, void* dst)
+{
+    int bytes;
+    char* start;
+    
+    if (vec->len < 3 * vec->cap / 4) {
+        resize(vec, 3 * vec->cap / 4);
+    }
+        
+    bytes = (vec->len - idx) * vec->stride;
+    start = vec->data + idx * vec->stride;
+    
+    memcpy(dst, start, vec->stride);
+    memmove(start, start + vec->stride, bytes);
+    
+    vec->len--;
+}
+
+/*********************************************************************
+ *                                                                   *
+ *                            retrieval                              *
+ *                                                                   *
+ *********************************************************************/
+
+/**********
+ * vecget *
+ **********/
+
+/* copies the item at an index to dst */
+
+void
+vecget(struct vector* vec, int idx, void* dst)
+{
+    memcpy(dst, vec->data + idx * vec->stride, vec->stride);
+}
+

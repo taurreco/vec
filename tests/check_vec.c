@@ -1,4 +1,4 @@
-#include "rcc.h"
+#include "vec.h"
 #include "unity.h"
 
 /*********************************************************************
@@ -10,43 +10,113 @@
 void 
 setUp() 
 {
-	    /* empty */
+    /* empty */
 }
 
 void 
 tearDown() 
 {
-	    /* empty */
+    /* empty */
 }
 
 /*********************************************************************
  *                                                                   *
- *                         token correctness                         *
+ *                                                       *
  *                                                                   *
  *********************************************************************/
 
-/*******
- * add *
- *******/
+/**********
+ * simple *
+ **********/
 
 void
-add()
+basic()
 {
-    char data[10];
-    struct exp* exp;
-    struct exp* act;
+    struct vector* vec;
     int one;
+    int two;
+    int tmp;
 
+    vec = mkvec(2, sizeof(int));
     one = 1;
-    struct buffer buf = { data, 0 };
+    two = 2;
 
-    exp = mkexp(E_BINOP, mkbinop(O_ADD, mkexp(E_INT, &one), mkexp(E_INT, &one)));
-    act = parse("1 + 1", &buf);
+    vecpush(vec, &one);
+    vecpush(vec, &two);
 
-    TEST_ASSERT_TRUE(expeq(exp, act));
+    vecget(vec, 0, &tmp);
+    TEST_ASSERT_EQUAL_INT(one, tmp);
 
-    delexp(exp);
-    delexp(act);
+    vecget(vec, 1, &tmp);
+    TEST_ASSERT_EQUAL_INT(two, tmp);
+    
+    delvec(vec);
+}
+
+/**************
+ * basic_grow *
+ **************/
+
+void
+basic_grow()
+{
+    struct vector* vec;
+    int one;
+    int two;
+    int tmp;
+
+    vec = mkvec(1, sizeof(int));
+    one = 1;
+    two = 2;
+
+    vecpush(vec, &one);
+    vecpush(vec, &two);
+
+    TEST_ASSERT_TRUE(vec->cap > 1);
+    TEST_ASSERT_EQUAL_INT(2, vec->len);
+
+    delvec(vec);
+}
+
+/*************
+ * basic_add *
+ *************/
+
+void
+basic_add()
+{
+    struct vector* vec;
+    int one;
+    int two;
+    int three;
+    int tmp;
+
+    vec = mkvec(4, sizeof(int));
+    one = 1;
+    two = 2;
+    three = 3;
+
+    vecpush(vec, &one);
+    vecpush(vec, &one);
+    vecpush(vec, &three);
+
+    vecget(vec, 1, &tmp);
+    TEST_ASSERT_EQUAL_INT(one, tmp);
+
+    vecadd(vec, &two, 1);
+
+    vecget(vec, 1, &tmp);
+    TEST_ASSERT_EQUAL_INT(two, tmp);
+
+    TEST_ASSERT_EQUAL_INT(4, vec->len);
+    
+    vecget(vec, 2, &tmp);
+    TEST_ASSERT_EQUAL_INT(one, tmp);
+    
+    vecget(vec, 3, &tmp);
+    TEST_ASSERT_EQUAL_INT(three, tmp);
+    
+    delvec(vec);
 }
 
 /*********************************************************************
@@ -63,7 +133,9 @@ int
 main() 
 {
     UNITY_BEGIN();
-    RUN_TEST(add);
+    RUN_TEST(basic);
+    RUN_TEST(basic_grow);
+    RUN_TEST(basic_add);
     return UNITY_END();
 }
 

@@ -1,11 +1,18 @@
 
+CC = gcc
+
+CFLAGS += -Wall
+CFLAGS += -Werror
+CFLAGS += -Wextra
+CFLAGS += -g
+
 all: test
 
 test:
-	gcc -g tests/check_vec.c vec.c unity/unity.c -Iunity -I. -o tests/check_vec
+	$(CC) $(CFLAGS) test.c vec.c unity/unity.c -Iunity -I. -o test
 
 check: test
-	./tests/check_vec
+	./test
 
 clean:
-	rm tests/check_vec
+	rm test

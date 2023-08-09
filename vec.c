@@ -27,6 +27,8 @@ mkvec(int cap, int stride)
     vec->cap = cap;
     vec->len = 0;
     vec->stride = stride;
+
+    return vec;
 }
 
 /**********
@@ -105,9 +107,8 @@ vecset(struct vector* vec, void* src, int idx)
 void
 vecpush(struct vector* vec, void* src)
 {
-    if (vec->len == vec->cap) {
+    if (vec->len == vec->cap)
         resize(vec, vec->cap * 2);    
-    }
 
     vec->len++;
 
@@ -126,9 +127,8 @@ vecadd(struct vector* vec, void* src, int idx)
     int bytes;
     char* start;
     
-    if (vec->len == vec->cap) {
+    if (vec->len == vec->cap)
         resize(vec, vec->cap * 2);
-    }
 
     bytes = (vec->len - idx) * vec->stride;
     start = vec->data + idx * vec->stride;
@@ -154,13 +154,13 @@ vecadd(struct vector* vec, void* src, int idx)
 void
 vecpop(struct vector* vec, void* dst)
 {
-    if (vec->len < 3 * vec->cap / 4) {
+    if (vec->len < 3 * vec->cap / 4)
         resize(vec, 3 * vec->cap / 4);
-    }
+    
+    if (dst)
+    	memcpy(dst, vec->data + (vec->len - 1) * vec->stride, vec->stride);
     
     vec->len--;
-
-    memcpy(dst, vec->data + idx * vec->stride, vec->stride);
 }
 
 /**********
@@ -175,14 +175,15 @@ vecdel(struct vector* vec, int idx, void* dst)
     int bytes;
     char* start;
     
-    if (vec->len < 3 * vec->cap / 4) {
+    if (vec->len < 3 * vec->cap / 4)
         resize(vec, 3 * vec->cap / 4);
-    }
         
     bytes = (vec->len - idx) * vec->stride;
     start = vec->data + idx * vec->stride;
     
-    memcpy(dst, start, vec->stride);
+    if (dst)
+    	memcpy(dst, start, vec->stride);
+
     memmove(start, start + vec->stride, bytes);
     
     vec->len--;

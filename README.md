@@ -1,2 +1,2 @@
 # vec
-A small vector containor library
+A small vector container library

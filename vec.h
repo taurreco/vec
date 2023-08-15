@@ -5,35 +5,35 @@
  * vector *
  **********/
 
-struct vector {
+typedef struct {
     char* data;
     int cap;
     int len;
     int stride;
-};
+} VECTOR;
 
 /* construction / destruction */
 
-struct vector* mkvec(int cap, int stride);
-void delvec(struct vector* vec);
+VECTOR* mkvec(int cap, int stride);
+void delvec(VECTOR* vec);
 
 /* insertion */
 
-void vecset(struct vector* vec, void* src, int idx);
-void vecpush(struct vector* vec, void* src);
-void vecadd(struct vector* vec, void* src, int idx);
+void vecset(VECTOR* vec, void* src, int idx);
+void vecpush(VECTOR* vec, void* src);
+void vecadd(VECTOR* vec, void* src, int idx);
 
 /* deletion */
 
-void vecpop(struct vector* vec, void* dst);
-void vecdel(struct vector* vec, int idx, void* dst);
+void vecpop(VECTOR* vec, void* dst);
+void vecdel(VECTOR* vec, int idx, void* dst);
 
 /* retrieval */
 
-void vecget(struct vector* vec, int idx, void* dst);
+void vecget(VECTOR* vec, int idx, void* dst);
 
 /* utility */
 
-int veclen(struct vector* vec);
+int veclen(VECTOR* vec);
 
 #endif    /* VEC_H */

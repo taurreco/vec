@@ -32,7 +32,7 @@ tearDown()
 void
 basic_push()
 {
-    struct vector* vec;
+    VECTOR* vec;
     int one;
     int two;
     int tmp;
@@ -60,7 +60,7 @@ basic_push()
 void
 basic_grow()
 {
-    struct vector* vec;
+    VECTOR* vec;
     int one;
     int two;
 
@@ -84,7 +84,7 @@ basic_grow()
 void
 basic_add()
 {
-    struct vector* vec;
+    VECTOR* vec;
     int one;
     int two;
     int three;
@@ -126,7 +126,7 @@ basic_add()
 void
 basic_pop()
 {
-    struct vector* vec;
+    VECTOR* vec;
     int one;
     int tmp;
 
@@ -155,7 +155,7 @@ basic_pop()
 void
 basic_shrink()
 {
-    struct vector* vec;
+    VECTOR* vec;
     int one;
 
     vec = mkvec(4, sizeof(int));
@@ -184,7 +184,7 @@ basic_shrink()
 void
 basic_del()
 {
-    struct vector* vec;
+    VECTOR* vec;
     int one;
     int two;
     int tmp;

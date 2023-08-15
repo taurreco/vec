@@ -14,13 +14,13 @@
  * mkvec *
  *********/
 
-VECTOR*
+struct VECTOR*
 mkvec(int cap, int stride)
 {
-    VECTOR* vec;
+    struct VECTOR* vec;
     char* data;
     
-    vec = malloc(sizeof(VECTOR));
+    vec = malloc(sizeof(struct VECTOR));
     data = malloc(cap * stride);
 
     vec->data = data;
@@ -36,7 +36,7 @@ mkvec(int cap, int stride)
  **********/
 
 void
-delvec(VECTOR* vec)
+delvec(struct VECTOR* vec)
 {
     free(vec->data);
     free(vec);
@@ -55,7 +55,7 @@ delvec(VECTOR* vec)
 /* changes size of vector */
 
 void
-resize(VECTOR* vec, int new_cap)
+resize(struct VECTOR* vec, int new_cap)
 {
     char* new_data;
     char* tmp;
@@ -75,7 +75,7 @@ resize(VECTOR* vec, int new_cap)
  **********/
 
 int
-veclen(VECTOR* vec)
+veclen(struct VECTOR* vec)
 {
     return vec->len;
 }
@@ -93,7 +93,7 @@ veclen(VECTOR* vec)
 /* updates existing item */
 
 void
-vecset(VECTOR* vec, void* src, int idx)
+vecset(struct VECTOR* vec, void* src, int idx)
 {
     memcpy(vec->data + idx * vec->stride, src, vec->stride);
 }
@@ -105,7 +105,7 @@ vecset(VECTOR* vec, void* src, int idx)
 /* pushes item to the back of the vector */
 
 void
-vecpush(VECTOR* vec, void* src)
+vecpush(struct VECTOR* vec, void* src)
 {
     if (vec->len == vec->cap)
         resize(vec, vec->cap * 2);    
@@ -122,7 +122,7 @@ vecpush(VECTOR* vec, void* src)
 /* inserts an item at an index */
 
 void
-vecadd(VECTOR* vec, void* src, int idx)
+vecadd(struct VECTOR* vec, void* src, int idx)
 {
     int bytes;
     char* start;
@@ -152,7 +152,7 @@ vecadd(VECTOR* vec, void* src, int idx)
 /* removes the last item in the vector, copies it to dst */
 
 void
-vecpop(VECTOR* vec, void* dst)
+vecpop(struct VECTOR* vec, void* dst)
 {
     if (vec->len < 3 * vec->cap / 4)
         resize(vec, 3 * vec->cap / 4);
@@ -170,7 +170,7 @@ vecpop(VECTOR* vec, void* dst)
 /* deletes an item at an index */
 
 void
-vecdel(VECTOR* vec, int idx, void* dst)
+vecdel(struct VECTOR* vec, int idx, void* dst)
 {
     int bytes;
     char* start;
@@ -202,7 +202,7 @@ vecdel(VECTOR* vec, int idx, void* dst)
 /* copies the item at an index to dst */
 
 void
-vecget(VECTOR* vec, int idx, void* dst)
+vecget(struct VECTOR* vec, int idx, void* dst)
 {
     memcpy(dst, vec->data + idx * vec->stride, vec->stride);
 }

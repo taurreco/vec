@@ -5,7 +5,7 @@
  * vector *
  **********/
 
-struct VECTOR {
+struct vector {
     char* data;
     int cap;
     int len;
@@ -14,26 +14,26 @@ struct VECTOR {
 
 /* construction / destruction */
 
-struct VECTOR* mkvec(int cap, int stride);
-void delvec(struct VECTOR* vec);
+struct vector* vec_alloc(int cap, int stride);
+void vec_free(struct vector* vec);
 
 /* insertion */
 
-void vecset(struct VECTOR* vec, void* src, int idx);
-void vecpush(struct VECTOR* vec, void* src);
-void vecadd(struct VECTOR* vec, void* src, int idx);
+void vec_set(struct vector* vec, void* src, int idx);
+void vec_push(struct vector* vec, void* src);
+void vec_add(struct vector* vec, void* src, int idx);
 
 /* deletion */
 
-void vecpop(struct VECTOR* vec, void* dst);
-void vecdel(struct VECTOR* vec, int idx, void* dst);
+void vec_pop(struct vector* vec, void* dst);
+void vec_del(struct vector* vec, int idx, void* dst);
 
 /* retrieval */
 
-void vecget(struct VECTOR* vec, int idx, void* dst);
+void vec_get(struct vector* vec, int idx, void* dst);
 
 /* utility */
 
-int veclen(struct VECTOR* vec);
+int vec_len(struct vector* vec);
 
 #endif    /* VEC_H */

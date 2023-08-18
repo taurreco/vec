@@ -32,25 +32,25 @@ tearDown()
 void
 basic_push()
 {
-    struct VECTOR* vec;
+    struct vector* vec;
     int one;
     int two;
     int tmp;
 
-    vec = mkvec(2, sizeof(int));
+    vec = vec_alloc(2, sizeof(int));
     one = 1;
     two = 2;
 
-    vecpush(vec, &one);
-    vecpush(vec, &two);
+    vec_push(vec, &one);
+    vec_push(vec, &two);
 
-    vecget(vec, 0, &tmp);
+    vec_get(vec, 0, &tmp);
     TEST_ASSERT_EQUAL_INT(one, tmp);
 
-    vecget(vec, 1, &tmp);
+    vec_get(vec, 1, &tmp);
     TEST_ASSERT_EQUAL_INT(two, tmp);
     
-    delvec(vec);
+    vec_free(vec);
 }
 
 /**************
@@ -60,21 +60,21 @@ basic_push()
 void
 basic_grow()
 {
-    struct VECTOR* vec;
+    struct vector* vec;
     int one;
     int two;
 
-    vec = mkvec(1, sizeof(int));
+    vec = vec_alloc(1, sizeof(int));
     one = 1;
     two = 2;
 
-    vecpush(vec, &one);
-    vecpush(vec, &two);
+    vec_push(vec, &one);
+    vec_push(vec, &two);
 
     TEST_ASSERT_TRUE(vec->cap > 1);
     TEST_ASSERT_EQUAL_INT(2, vec->len);
 
-    delvec(vec);
+    vec_free(vec);
 }
 
 /*************
@@ -84,39 +84,39 @@ basic_grow()
 void
 basic_add()
 {
-    struct VECTOR* vec;
+    struct vector* vec;
     int one;
     int two;
     int three;
     int tmp;
 
-    vec = mkvec(4, sizeof(int));
+    vec = vec_alloc(4, sizeof(int));
     one = 1;
     two = 2;
     three = 3;
 
-    vecpush(vec, &one);
-    vecpush(vec, &one);
-    vecpush(vec, &three);
+    vec_push(vec, &one);
+    vec_push(vec, &one);
+    vec_push(vec, &three);
     
     TEST_ASSERT_EQUAL_INT(3, vec->len);
 
-    vecget(vec, 1, &tmp);
+    vec_get(vec, 1, &tmp);
     TEST_ASSERT_EQUAL_INT(one, tmp);
 
-    vecadd(vec, &two, 1);
+    vec_add(vec, &two, 1);
 
-    vecget(vec, 1, &tmp);
+    vec_get(vec, 1, &tmp);
     TEST_ASSERT_EQUAL_INT(two, tmp);
     TEST_ASSERT_EQUAL_INT(4, vec->len);
     
-    vecget(vec, 2, &tmp);
+    vec_get(vec, 2, &tmp);
     TEST_ASSERT_EQUAL_INT(one, tmp);
     
-    vecget(vec, 3, &tmp);
+    vec_get(vec, 3, &tmp);
     TEST_ASSERT_EQUAL_INT(three, tmp);
     
-    delvec(vec);
+    vec_free(vec);
 }
 
 /*************
@@ -126,26 +126,26 @@ basic_add()
 void
 basic_pop()
 {
-    struct VECTOR* vec;
+    struct vector* vec;
     int one;
     int tmp;
 
-    vec = mkvec(1, sizeof(int));
+    vec = vec_alloc(1, sizeof(int));
     one = 1;
 
-    vecpush(vec, &one);
+    vec_push(vec, &one);
 
-    vecget(vec, 0, &tmp); 
+    vec_get(vec, 0, &tmp); 
     TEST_ASSERT_EQUAL_INT(one, tmp);
     TEST_ASSERT_EQUAL_INT(1, vec->len);
 
     tmp = 0;
 
-    vecpop(vec, &tmp);
+    vec_pop(vec, &tmp);
     TEST_ASSERT_EQUAL_INT(one, tmp);
     TEST_ASSERT_EQUAL_INT(0, vec->len);
 
-    delvec(vec);
+    vec_free(vec);
 }
 
 /****************
@@ -155,26 +155,26 @@ basic_pop()
 void
 basic_shrink()
 {
-    struct VECTOR* vec;
+    struct vector* vec;
     int one;
 
-    vec = mkvec(4, sizeof(int));
+    vec = vec_alloc(4, sizeof(int));
     one = 1;
 
-    vecpush(vec, &one);
-    vecpush(vec, &one);
-    vecpush(vec, &one);
-    vecpush(vec, &one);
+    vec_push(vec, &one);
+    vec_push(vec, &one);
+    vec_push(vec, &one);
+    vec_push(vec, &one);
 
     TEST_ASSERT_EQUAL_INT(4, vec->cap);
     
-    vecpop(vec, 0);
-    vecpop(vec, 0);
-    vecpop(vec, 0);
+    vec_pop(vec, 0);
+    vec_pop(vec, 0);
+    vec_pop(vec, 0);
 
     TEST_ASSERT_EQUAL_INT(3, vec->cap);
 
-    delvec(vec);
+    vec_free(vec);
 }
 
 /*************
@@ -184,31 +184,31 @@ basic_shrink()
 void
 basic_del()
 {
-    struct VECTOR* vec;
+    struct vector* vec;
     int one;
     int two;
     int tmp;
 
-    vec = mkvec(4, sizeof(int));
+    vec = vec_alloc(4, sizeof(int));
     one = 1;
     two = 2;
 
-    vecpush(vec, &one);
-    vecpush(vec, &one);
-    vecpush(vec, &two);
+    vec_push(vec, &one);
+    vec_push(vec, &one);
+    vec_push(vec, &two);
     
     TEST_ASSERT_EQUAL_INT(3, vec->len);
 
-    vecget(vec, 1, &tmp);
+    vec_get(vec, 1, &tmp);
     TEST_ASSERT_EQUAL_INT(one, tmp);
 
-    vecdel(vec, 1, 0);
+    vec_del(vec, 1, 0);
     TEST_ASSERT_EQUAL_INT(2, vec->len);
     
-    vecget(vec, 1, &tmp);
+    vec_get(vec, 1, &tmp);
     TEST_ASSERT_EQUAL_INT(two, tmp);
     
-    delvec(vec);
+    vec_free(vec);
 }
 
 

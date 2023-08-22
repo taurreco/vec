@@ -1,12 +1,14 @@
 #ifndef VEC_H
 #define VEC_H
 
+#include <stdint.h>
+
 /**********
  * vector *
  **********/
 
 struct vector {
-    char* data;
+    uint8_t* data;
     int cap;
     int len;
     int stride;
@@ -21,7 +23,7 @@ void vec_free(struct vector* vec);
 
 void vec_set(struct vector* vec, void* src, int idx);
 void vec_push(struct vector* vec, void* src);
-void vec_add(struct vector* vec, void* src, int idx);
+void vec_put(struct vector* vec, void* src, int idx);
 
 /* deletion */
 

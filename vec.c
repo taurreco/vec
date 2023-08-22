@@ -116,13 +116,13 @@ vec_push(struct vector* vec, void* src)
 }
 
 /***********
- * vec_add *
+ * vec_put *
  ***********/
 
 /* inserts an item at an index */
 
 void
-vec_add(struct vector* vec, void* src, int idx)
+vec_put(struct vector* vec, void* src, int idx)
 {
     int bytes;
     char* start;

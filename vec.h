@@ -8,34 +8,34 @@
  **********/
 
 struct vector {
-    uint8_t* data;
+    void (*val_free)(void *);
+    uintptr_t *data;
     int cap;
     int len;
-    int stride;
 };
 
 /* construction / destruction */
 
-struct vector* vec_alloc(int cap, int stride);
-void vec_free(struct vector* vec);
+struct vector * vec_alloc(int cap, void (*val_free)(void *));
+void vec_free(struct vector *vec);
 
 /* insertion */
 
-void vec_set(struct vector* vec, void* src, int idx);
-void vec_push(struct vector* vec, void* src);
-void vec_put(struct vector* vec, void* src, int idx);
+void vec_set(struct vector *vec, uintptr_t src, int idx);
+void vec_push(struct vector *vec, uintptr_t src);
+void vec_put(struct vector *vec, uintptr_t src, int idx);
 
 /* deletion */
 
-void vec_pop(struct vector* vec, void* dst);
-void vec_del(struct vector* vec, int idx, void* dst);
+uintptr_t vec_pop(struct vector *vec);
+uintptr_t vec_del(struct vector *vec, int idx);
 
 /* retrieval */
 
-void vec_get(struct vector* vec, int idx, void* dst);
+uintptr_t vec_get(struct vector *vec, int idx);
 
 /* utility */
 
-int vec_len(struct vector* vec);
+int vec_len(struct vector *vec);
 
 #endif    /* VEC_H */

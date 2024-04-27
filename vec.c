@@ -14,19 +14,19 @@
  * vec_alloc *
  *************/
 
-struct vector*
-vec_alloc(int cap, int stride)
+struct vector *
+vec_alloc(int cap, void (*val_free)(void *))
 {
-    struct vector* vec;
-    char* data;
+    struct vector *vec;
+    uintptr_t *data;
     
     vec = malloc(sizeof(struct vector));
-    data = malloc(cap * stride);
+    data = malloc(cap * sizeof(uintptr_t));
 
+    vec->val_free = val_free;
     vec->data = data;
     vec->cap = cap;
     vec->len = 0;
-    vec->stride = stride;
 
     return vec;
 }
@@ -36,8 +36,15 @@ vec_alloc(int cap, int stride)
  ************/
 
 void
-vec_free(struct vector* vec)
+vec_free(struct vector *vec)
 {
+    if (vec->val_free) {
+        for (int i = 0; i < vec->cap; i++) {
+            if (vec->data[i])
+                vec->val_free((void *)vec->data[i]);
+        }
+    }
+
     free(vec->data);
     free(vec);
 }
@@ -55,15 +62,14 @@ vec_free(struct vector* vec)
 /* changes size of vector */
 
 void
-resize(struct vector* vec, int new_cap)
+resize(struct vector *vec, int new_cap)
 {
-    char* new_data;
-    char* tmp;
+    uintptr_t *new_data, *tmp;
 
-    new_data = malloc(new_cap * vec->stride);
+    new_data = malloc(new_cap * sizeof(uintptr_t));
     tmp = vec->data;
     
-    memcpy(new_data, vec->data, vec->len * vec->stride);
+    memcpy(new_data, vec->data, vec->len * sizeof(uintptr_t));
     vec->data = new_data;
     vec->cap = new_cap;
     
@@ -75,7 +81,7 @@ resize(struct vector* vec, int new_cap)
  ***********/
 
 int
-vec_len(struct vector* vec)
+vec_len(struct vector *vec)
 {
     return vec->len;
 }
@@ -93,9 +99,14 @@ vec_len(struct vector* vec)
 /* updates existing item */
 
 void
-vec_set(struct vector* vec, void* src, int idx)
+vec_set(struct vector *vec, uintptr_t src, int idx)
 {
-    memcpy(vec->data + idx * vec->stride, src, vec->stride);
+    if (vec->val_free) {
+        if (vec->data[idx])
+            vec->val_free((void *)vec->data[idx]);
+    }
+
+    vec->data[idx] = src;
 }
 
 /************
@@ -105,10 +116,10 @@ vec_set(struct vector* vec, void* src, int idx)
 /* pushes item to the back of the vector */
 
 void
-vec_push(struct vector* vec, void* src)
+vec_push(struct vector *vec, uintptr_t src)
 {
     if (vec->len == vec->cap)
-        resize(vec, vec->cap * 2);    
+        resize(vec, vec->cap * 2); 
 
     vec->len++;
 
@@ -122,18 +133,18 @@ vec_push(struct vector* vec, void* src)
 /* inserts an item at an index */
 
 void
-vec_put(struct vector* vec, void* src, int idx)
+vec_put(struct vector *vec, uintptr_t src, int idx)
 {
-    int bytes;
-    char* start;
+    int len;
+    uintptr_t *start;
     
     if (vec->len == vec->cap)
         resize(vec, vec->cap * 2);
 
-    bytes = (vec->len - idx) * vec->stride;
-    start = vec->data + idx * vec->stride;
+    len = (vec->len - idx);    /* length past idx */
+    start = vec->data + idx;
 
-    memmove(start + vec->stride, start, bytes);
+    memmove(start + 1, start, len * sizeof(uintptr_t));
     vec_set(vec, src, idx);
     
     vec->len++;
@@ -151,16 +162,19 @@ vec_put(struct vector* vec, void* src, int idx)
 
 /* removes the last item in the vector, copies it to dst */
 
-void
-vec_pop(struct vector* vec, void* dst)
+uintptr_t 
+vec_pop(struct vector *vec)
 {
+    uintptr_t res;
+
     if (vec->len < 3 * vec->cap / 4)
         resize(vec, 3 * vec->cap / 4);
     
-    if (dst)
-    	memcpy(dst, vec->data + (vec->len - 1) * vec->stride, vec->stride);
+    res = vec->data[vec->len - 1];
     
     vec->len--;
+
+    return res;
 }
 
 /***********
@@ -169,24 +183,25 @@ vec_pop(struct vector* vec, void* dst)
 
 /* deletes an item at an index */
 
-void
-vec_del(struct vector* vec, int idx, void* dst)
+uintptr_t
+vec_del(struct vector *vec, int idx)
 {
-    int bytes;
-    char* start;
+    int len;
+    uintptr_t *start, res;
     
     if (vec->len < 3 * vec->cap / 4)
         resize(vec, 3 * vec->cap / 4);
         
-    bytes = (vec->len - idx) * vec->stride;
-    start = vec->data + idx * vec->stride;
+    len = (vec->len - idx);
+    start = vec->data + idx;
     
-    if (dst)
-    	memcpy(dst, start, vec->stride);
+    res = vec->data[idx];
 
-    memmove(start, start + vec->stride, bytes);
+    memmove(start, start + 1, len * sizeof(uintptr_t ));
     
     vec->len--;
+
+    return res;
 }
 
 /*********************************************************************
@@ -201,9 +216,9 @@ vec_del(struct vector* vec, int idx, void* dst)
 
 /* copies the item at an index to dst */
 
-void
-vec_get(struct vector* vec, int idx, void* dst)
+uintptr_t 
+vec_get(struct vector *vec, int idx)
 {
-    memcpy(dst, vec->data + idx * vec->stride, vec->stride);
+    return vec->data[idx];    
 }
 

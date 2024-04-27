@@ -82,7 +82,7 @@ basic_put()
     vec = vec_alloc(4, 0);
 
     vec_push(vec, 1);
-    vec_push(vec, 2);
+    vec_push(vec, 1);
     vec_push(vec, 3);
     
     TEST_ASSERT_EQUAL_INT(3, vec->len);

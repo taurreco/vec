@@ -140,7 +140,7 @@ basic_pop()
 void
 basic_shrink()
 {
-    struct vector* vec;
+    struct vector *vec;
 
     vec = vec_alloc(4, 0);
 

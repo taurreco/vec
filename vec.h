@@ -3,36 +3,38 @@
 
 #include <stdint.h>
 
+#define DEFAULT_CAP 5
+
 /**********
  * vector *
  **********/
 
 struct vector {
-    void (*val_free)(void *);
-    uintptr_t *data;
-    int cap;
-    int len;
+    uint8_t *data;
+    int cap;         /* total space in strides */
+    int len;         /* length in strides */
+    int stride;      /* unit length of data in bytes */
 };
 
 /* construction / destruction */
 
-struct vector * vec_alloc(int cap, void (*val_free)(void *));
+struct vector * vec_alloc(int cap, int stride);
 void vec_free(struct vector *vec);
 
 /* insertion */
 
-void vec_set(struct vector *vec, uintptr_t src, int idx);
-void vec_push(struct vector *vec, uintptr_t src);
-void vec_put(struct vector *vec, uintptr_t src, int idx);
+int vec_set(struct vector *vec, uint8_t *src, int idx);
+int vec_push(struct vector *vec, uint8_t *src);
+int vec_put(struct vector *vec, uint8_t *src, int idx);
 
 /* deletion */
 
-uintptr_t vec_pop(struct vector *vec);
-uintptr_t vec_del(struct vector *vec, int idx);
+int vec_pop(struct vector *vec, uint8_t *dest);
+int vec_del(struct vector *vec, int idx, uint8_t *out);
 
 /* retrieval */
 
-uintptr_t vec_get(struct vector *vec, int idx);
+int vec_get(struct vector *vec, int idx, uint8_t *out);
 
 /* utility */
 

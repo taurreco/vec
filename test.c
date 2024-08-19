@@ -142,92 +142,98 @@ basic_put()
  * basic_pop *
  *************/
 
-/*
+
 void
 basic_pop()
 {
     struct vector *vec;
-    int tmp;
+    int status, tmp;
 
-    vec = vec_alloc(1, 0);
+    vec = vec_alloc(1, sizeof(int));
 
-    vec_push(vec, 1);
+    tmp = 1;
+    status = vec_push(vec, &tmp);
+    TEST_ASSERT_EQUAL_INT(0, status);
 
-    tmp = vec_get(vec, 0); 
-    
+    status = vec_get(vec, 0, &tmp); 
+    TEST_ASSERT_EQUAL_INT(0, status);
     TEST_ASSERT_EQUAL_INT(1, tmp);
     TEST_ASSERT_EQUAL_INT(1, vec->len);
     
     tmp = 0;
-    tmp = vec_pop(vec);
-
+    status = vec_pop(vec, &tmp);
+    TEST_ASSERT_EQUAL_INT(0, status);
     TEST_ASSERT_EQUAL_INT(1, tmp);
+
     TEST_ASSERT_EQUAL_INT(0, vec->len);
 
     vec_free(vec);
 }
-*/
+
 
 /****************
  * basic_shrink *
  ****************/
 
-/*
 void
 basic_shrink()
 {
     struct vector *vec;
+    int tmp;
 
-    vec = vec_alloc(4, 0);
-
-    vec_push(vec, 1);
-    vec_push(vec, 1);
-    vec_push(vec, 1);
-    vec_push(vec, 1);
-
-    TEST_ASSERT_EQUAL_INT(4, vec->cap);
+    vec = vec_alloc(8, sizeof(int));
     
-    vec_pop(vec);
-    vec_pop(vec);
-    vec_pop(vec);
+    tmp = 1;
+    TEST_ASSERT_EQUAL_INT(0, vec_push(vec, &tmp));
+    TEST_ASSERT_EQUAL_INT(0, vec_push(vec, &tmp));
+    TEST_ASSERT_EQUAL_INT(0, vec_push(vec, &tmp));
+    TEST_ASSERT_EQUAL_INT(0, vec_push(vec, &tmp));
 
-    TEST_ASSERT_EQUAL_INT(3, vec->cap);
+    TEST_ASSERT_EQUAL_INT(8, vec->cap);
+    
+    TEST_ASSERT_EQUAL_INT(0, vec_pop(vec, NULL));
+    TEST_ASSERT_EQUAL_INT(0, vec_pop(vec, NULL));
+    TEST_ASSERT_EQUAL_INT(0, vec_pop(vec, NULL));
+    TEST_ASSERT_EQUAL_INT(0, vec_pop(vec, NULL));
+
+    TEST_ASSERT_EQUAL_INT(5, vec->cap);
 
     vec_free(vec);
 }
-*/
 
 /*************
  * basic_del *
  *************/
 
-/*
 void
 basic_del()
 {
     struct vector *vec;
     int tmp;
 
-    vec = vec_alloc(4, 0);
+    vec = vec_alloc(4, sizeof(int));
 
-    vec_push(vec, 1);
-    vec_push(vec, 1);
-    vec_push(vec, 2);
+    tmp = 1;
+    TEST_ASSERT_EQUAL_INT(0, vec_push(vec, &tmp));
+    TEST_ASSERT_EQUAL_INT(0, vec_push(vec, &tmp));
+    tmp = 2;
+    TEST_ASSERT_EQUAL_INT(0, vec_push(vec, &tmp));
     
     TEST_ASSERT_EQUAL_INT(3, vec->len);
 
-    tmp = vec_get(vec, 1);
+    TEST_ASSERT_EQUAL_INT(0, vec_get(vec, 1, &tmp));
     TEST_ASSERT_EQUAL_INT(1, tmp);
 
-    vec_del(vec, 1);
+    tmp = 0;
+    TEST_ASSERT_EQUAL_INT(0, vec_del(vec, 1, &tmp));
+    TEST_ASSERT_EQUAL_INT(1, tmp);
     TEST_ASSERT_EQUAL_INT(2, vec->len);
     
-    tmp = vec_get(vec, 1);
+    TEST_ASSERT_EQUAL_INT(0, vec_get(vec, 1, &tmp));
     TEST_ASSERT_EQUAL_INT(2, tmp);
     
     vec_free(vec);
 }
-*/
 
 /*********************************************************************
  *                                                                   *
@@ -246,9 +252,9 @@ main()
     RUN_TEST(basic_push);
     RUN_TEST(basic_grow);
     RUN_TEST(basic_put);
-  //  RUN_TEST(basic_pop);
-  //  RUN_TEST(basic_shrink);
-  //  RUN_TEST(basic_del);
+    RUN_TEST(basic_pop);
+    RUN_TEST(basic_shrink);
+    RUN_TEST(basic_del);
     return UNITY_END();
 }
 

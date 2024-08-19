@@ -190,8 +190,8 @@ vec_pop(struct vector *vec, void *out)
     if (vec->len == 0)
         return -1;
     
-    if (vec->len < 3 * vec->cap / 4)
-        resize(vec, 3 * vec->cap / 4);
+    if (vec->len < vec->cap / 3)
+        resize(vec, 2 * vec->cap / 3);
     
     src = vec->data + (vec->len - 1) * vec->stride;
     
@@ -218,8 +218,8 @@ vec_del(struct vector *vec, int idx, void *out)
     if (vec->len == 0)
         return -1;
 
-    if (vec->len < 3 * vec->cap / 4)
-        resize(vec, 3 * vec->cap / 4);
+    if (vec->len < vec->cap / 3)
+        resize(vec, 2 * vec->cap / 3);
         
     len = vec->len - idx;
     start = vec->data + idx * vec->stride;

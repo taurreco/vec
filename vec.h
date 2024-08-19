@@ -23,18 +23,18 @@ void vec_free(struct vector *vec);
 
 /* insertion */
 
-int vec_set(struct vector *vec, uint8_t *src, int idx);
-int vec_push(struct vector *vec, uint8_t *src);
-int vec_put(struct vector *vec, uint8_t *src, int idx);
+int vec_set(struct vector *vec, void *src, int idx);
+int vec_push(struct vector *vec, void *src);
+int vec_put(struct vector *vec, void *src, int idx);
 
 /* deletion */
 
-int vec_pop(struct vector *vec, uint8_t *dest);
-int vec_del(struct vector *vec, int idx, uint8_t *out);
+int vec_pop(struct vector *vec, void *dest);
+int vec_del(struct vector *vec, int idx, void *out);
 
 /* retrieval */
 
-int vec_get(struct vector *vec, int idx, uint8_t *out);
+int vec_get(struct vector *vec, int idx, void *out);
 
 /* utility */
 

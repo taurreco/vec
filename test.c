@@ -33,22 +33,20 @@ void
 basic_push()
 {
     struct vector *vec;
-    int status, tmp;
+    int tmp;
 
     vec = vec_alloc(2, sizeof(int));
     
     tmp = 1;
-    status = vec_push(vec, &tmp);
-    TEST_ASSERT_EQUAL_INT(0, status);
+    TEST_ASSERT_EQUAL_INT(0, vec_push(vec, &tmp));
     tmp = 2;
-    status = vec_push(vec, &tmp);
-    TEST_ASSERT_EQUAL_INT(0, status);
+    TEST_ASSERT_EQUAL(0, vec_push(vec, &tmp));
     tmp = 0;
 
-    status = vec_get(vec, 0, &tmp);
+    TEST_ASSERT_EQUAL_INT(0, vec_get(vec, 0, &tmp));
     TEST_ASSERT_EQUAL_INT(1, tmp);
    
-    status = vec_get(vec, 1, &tmp);
+    TEST_ASSERT_EQUAL_INT(0, vec_get(vec, 1, &tmp));
     TEST_ASSERT_EQUAL_INT(2, tmp);
     
     vec_free(vec);
@@ -62,17 +60,15 @@ void
 basic_grow()
 {
     struct vector *vec;
-    int status, tmp;
+    int tmp;
 
     vec = vec_alloc(1, sizeof(int));
     tmp = 1;
     
     TEST_ASSERT_FALSE(vec->cap > 1);
 
-    status = vec_push(vec, &tmp);
-    TEST_ASSERT_EQUAL_INT(0, status);
-    status = vec_push(vec, &tmp);
-    TEST_ASSERT_EQUAL_INT(0, status);
+    TEST_ASSERT_EQUAL_INT(0, vec_push(vec, &tmp));
+    TEST_ASSERT_EQUAL_INT(0, vec_push(vec, &tmp));
 
     TEST_ASSERT_TRUE(vec->cap > 1);
     TEST_ASSERT_EQUAL_INT(2, vec->len);
@@ -88,25 +84,21 @@ void
 basic_put()
 {
     struct vector *vec;
-    int status, tmp;
+    int tmp;
 
     vec = vec_alloc(4, sizeof(int));
     
     /* fill vec [1, 1, 3] */
 
     tmp = 1;
-    status = vec_push(vec, &tmp);
-    TEST_ASSERT_EQUAL(0, status);
-    status = vec_push(vec, &tmp);
-    TEST_ASSERT_EQUAL(0, status);
+    TEST_ASSERT_EQUAL_INT(0, vec_push(vec, &tmp));
+    TEST_ASSERT_EQUAL_INT(0, vec_push(vec, &tmp));
     tmp = 3;
-    status = vec_push(vec, &tmp);
-    TEST_ASSERT_EQUAL(0, status);
+    TEST_ASSERT_EQUAL_INT(0, vec_push(vec, &tmp));
     
     TEST_ASSERT_EQUAL_INT(3, vec->len);
 
-    status = vec_get(vec, 1, &tmp);
-    TEST_ASSERT_EQUAL(0, status);
+    TEST_ASSERT_EQUAL_INT(0, vec_get(vec, 1, &tmp));
     TEST_ASSERT_EQUAL_INT(1, tmp);
 
     /**
@@ -117,22 +109,18 @@ basic_put()
      */
 
     tmp = 2;
-    status = vec_put(vec, &tmp, 1);
-    TEST_ASSERT_EQUAL(0, status);
+    TEST_ASSERT_EQUAL_INT(0, vec_put(vec, &tmp, 1));
 
     /* use getters to assert vec state */
 
-    status = vec_get(vec, 1, &tmp);
-    TEST_ASSERT_EQUAL(0, status);
+    TEST_ASSERT_EQUAL_INT(0, vec_get(vec, 1, &tmp));
     TEST_ASSERT_EQUAL_INT(2, tmp);
     TEST_ASSERT_EQUAL_INT(4, vec->len);
     
-    status = vec_get(vec, 2, &tmp);
-    TEST_ASSERT_EQUAL(0, status);
+    TEST_ASSERT_EQUAL_INT(0, vec_get(vec, 2, &tmp));
     TEST_ASSERT_EQUAL_INT(1, tmp);
     
-    status = vec_get(vec, 3, &tmp);
-    TEST_ASSERT_EQUAL(0, status);
+    TEST_ASSERT_EQUAL_INT(0, vec_get(vec, 3, &tmp));
     TEST_ASSERT_EQUAL_INT(3, tmp);
     
     vec_free(vec);
@@ -147,22 +135,19 @@ void
 basic_pop()
 {
     struct vector *vec;
-    int status, tmp;
+    int tmp;
 
     vec = vec_alloc(1, sizeof(int));
 
     tmp = 1;
-    status = vec_push(vec, &tmp);
-    TEST_ASSERT_EQUAL_INT(0, status);
+    TEST_ASSERT_EQUAL_INT(0, vec_push(vec, &tmp));
 
-    status = vec_get(vec, 0, &tmp); 
-    TEST_ASSERT_EQUAL_INT(0, status);
+    TEST_ASSERT_EQUAL(0, vec_get(vec, 0, &tmp)); 
     TEST_ASSERT_EQUAL_INT(1, tmp);
     TEST_ASSERT_EQUAL_INT(1, vec->len);
     
     tmp = 0;
-    status = vec_pop(vec, &tmp);
-    TEST_ASSERT_EQUAL_INT(0, status);
+    TEST_ASSERT_EQUAL_INT(0, vec_pop(vec, &tmp));
     TEST_ASSERT_EQUAL_INT(1, tmp);
 
     TEST_ASSERT_EQUAL_INT(0, vec->len);
